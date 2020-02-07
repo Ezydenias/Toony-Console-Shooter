@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform target;
+    public GameObject target;
     public float rotationSpeed;
+
     public Transform pivot;
-    public Transform gunCursorTargeter;
-    public Vector3 cursorOffset;
-    public float maxCursorDistance = 10;
+
+    //public Transform gunCursorTargeter;
+    //public Vector3 cursorOffset;
+    //public float maxCursorDistance = 10;
     public float maxViewAngle;
     public float minViewAngle;
     public bool invertX;
@@ -22,46 +24,48 @@ public class CameraController : MonoBehaviour
     public float verticalPlayerFollowDeadzone = 4f;
     public float CameraPlayerFollowDeadzone = .1f;
     public float playerHeight = 1;
+    public float ladderFacingSmoothing = 0.5f;
 
-
+    //private Transform target;
     private Vector3 offset;
 
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        //target = gameObject.transform;
     }
 
     //finds the next surface to position of the targeting cursor for the gun to show
-    private void gunCursor()
-    {
-        RaycastHit[] hits;
-        hits = Physics.RaycastAll(transform.position + cursorOffset, transform.forward, maxCursorDistance);
+    //private void gunCursor()
+    //{
+    //    RaycastHit[] hits;
+    //    hits = Physics.RaycastAll(transform.position + cursorOffset, transform.forward, maxCursorDistance);
 
 
-        float oldDistance = 100;
-        float newDistance = 100;
+    //    float oldDistance = 100;
+    //    float newDistance = 100;
 
-        float cameraDistance = Vector3.Distance(transform.position, target.position);
+    //    float cameraDistance = Vector3.Distance(transform.position, target.position);
 
-        for (int i = 0; i < hits.Length; i++)
-        {
-            if (hits[i].collider.tag != "Player" && hits[i].collider.tag != "Cursor")
-            {
-                newDistance = hits[i].distance;
-                //Aligns cursor with the hit surface, this gets replaced with every next hit that is closer
-                //testing showed that the array of hits isn't built in a logical order
-                if (newDistance < oldDistance && newDistance > cameraDistance)
-                {
-                    gunCursorTargeter.rotation = Quaternion.LookRotation(hits[i].normal);
-                    gunCursorTargeter.transform.position = hits[i].point;
-                    oldDistance = newDistance;
-                }
+    //    for (int i = 0; i < hits.Length; i++)
+    //    {
+    //        if (hits[i].collider.tag != "Player" && hits[i].collider.tag != "Cursor")
+    //        {
+    //            newDistance = hits[i].distance;
+    //            //Aligns cursor with the hit surface, this gets replaced with every next hit that is closer
+    //            //testing showed that the array of hits isn't built in a logical order
+    //            if (newDistance < oldDistance && newDistance > cameraDistance)
+    //            {
+    //                gunCursorTargeter.rotation = Quaternion.LookRotation(hits[i].normal);
+    //                gunCursorTargeter.transform.position = hits[i].point;
+    //                oldDistance = newDistance;
+    //            }
 
-                //break;
-            }
-        }
-    }
+    //            //break;
+    //        }
+    //    }
+    //}
 
     private void cameraCollsion()
     {
@@ -118,7 +122,7 @@ public class CameraController : MonoBehaviour
     private void allignWithGround()
     {
         RaycastHit[] ground;
-        ground = Physics.RaycastAll(target.position, new Vector3(0, -1, 0), playerHeight);
+        ground = Physics.RaycastAll(target.transform.position, new Vector3(0, -1, 0), playerHeight);
         //Debug.Log("here");
 
         if (ground.Length >= 1)
@@ -129,9 +133,10 @@ public class CameraController : MonoBehaviour
 //            pivot.transform.localRotation=Quaternion.Euler(Vector3.Lerp(pivot.transform.localRotation.eulerAngles, new Vector3(0, 0, 0), smoothTimeCammeraRecenter));
 //            pivot.transform.localRotation=Quaternion.Euler(new Vector3(0, 0, 0));
 //            pivot.transform.localRotation=Quaternion.Lerp(pivot.localRotation, Quaternion.Euler(new Vector3(0, 0, 0)), smoothTimeCammeraRecenter);
-            pivot.transform.localRotation=Quaternion.Lerp(pivot.localRotation, Quaternion.Euler(ground[0].normal), smoothTimeCammeraRecenter);
+            pivot.transform.localRotation = Quaternion.Lerp(pivot.localRotation, Quaternion.Euler(ground[0].normal),
+                smoothTimeCammeraRecenter);
             //Debug.Log(ground[0].normal);
-           // Debug.DrawRay(target.position, new Vector3(0, -1, 0), Color.green);
+            // Debug.DrawRay(target.position, new Vector3(0, -1, 0), Color.green);
         }
     }
 
@@ -154,11 +159,19 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        if (invertX)
-            target.Rotate(0, -horizontal, 0);
+        if (!target.GetComponent<PlayerController>().getOnLadder())
+        {
+            if (invertX)
+                target.transform.Rotate(0, -horizontal, 0);
+            else
+                target.transform.Rotate(0, horizontal, 0);
+        }
         else
-            target.Rotate(0, horizontal, 0);
-
+        {
+            target.transform.rotation = Quaternion.Lerp(target.transform.rotation,
+                Quaternion.Euler(0, target.GetComponent<PlayerController>().getLadderOrientation().eulerAngles.y, 0),
+                ladderFacingSmoothing);
+        }
 
         if (invertY)
             pivot.Rotate(vertical, 0, 0);

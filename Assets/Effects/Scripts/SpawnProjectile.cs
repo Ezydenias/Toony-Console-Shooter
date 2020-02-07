@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class SpawnProjectile : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class SpawnProjectile : MonoBehaviour
     public bool player = false;
     public float targetingError = .1f;
     public float maxPitch = 4;
+    public GameObject Character;
 
     private GameObject effectToSpawn;
     private GameObject effectToSound;
@@ -32,7 +34,7 @@ public class SpawnProjectile : MonoBehaviour
         // Update is called once per frame
     void Update()
     {
-        if (player)
+        if (player && !Character.GetComponent<PlayerController>().getSwimming() && !Character.GetComponent<PlayerController>().getOnLadder())
         {
             if (Input.GetButton("Fire1") && Time.time >= timeToFire)
             {

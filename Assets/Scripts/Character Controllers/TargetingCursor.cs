@@ -5,7 +5,7 @@ using UnityEngine;
 public class TargetingCursor : MonoBehaviour
 {
     public Transform gunCursorTargeter;
-
+    public GameObject Player;
     public float maxDistance = 20;
 
     private List<GameObject> enemyList = new List<GameObject>();
@@ -20,14 +20,22 @@ public class TargetingCursor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!enemyTarget())
-            gunCursor();
-       // Debug.Log(enemyList.Count);
+        if (!Player.GetComponent<PlayerController>().getSwimming() &&
+            !Player.GetComponent<PlayerController>().getOnLadder())
+        {
+            enemyTarget(gunCursor());
+        }
+        else
+        {
+            gunCursorTargeter.position = new Vector3(0, -100000, 0);
+        }
+
+        // Debug.Log(enemyList.Count);
     }
 
     private void OnDisable()
     {
-       // Debug.Log("what?");
+        // Debug.Log("what?");
         enemyList.Clear();
     }
 
@@ -47,27 +55,23 @@ public class TargetingCursor : MonoBehaviour
             enemyList.Remove(other.gameObject);
     }
 
-    bool enemyTarget()
+    void enemyTarget(float cursorPosition)
     {
         float enemyDistance = 200;
         float oldDistance = 200;
-        Vector3 closestPosition=new Vector3();
-        
-        
+        Vector3 closestPosition = new Vector3();
+
 
         for (int i = 0; i < enemyList.Count; i++)
         {
-            
             if (enemyList[i].gameObject)
             {
-                
                 enemyDistance = Vector3.Distance(transform.position, enemyList[i].transform.position);
-                //Debug.Log(enemyDistance);
+
                 if (enemyDistance < oldDistance)
                 {
-                    
                     closestPosition = enemyList[i].gameObject.transform.position;
-                    //Debug.Log(closestPosition);
+
                     oldDistance = enemyDistance;
                 }
             }
@@ -79,25 +83,20 @@ public class TargetingCursor : MonoBehaviour
 
         if (enemyList.Count != 0)
         {
-            RaycastHit[] hits;
-            hits = Physics.RaycastAll(transform.position, closestPosition- transform.position, oldDistance+1);
-          //  Debug.DrawRay(transform.position, transform.forward, Color.green);
+            if (oldDistance<=cursorPosition)
+            {
+                RaycastHit[] hits;
+                hits = Physics.RaycastAll(transform.position, closestPosition - transform.position, oldDistance + 1);
 
-            gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.red;
-            gunCursorTargeter.rotation = Quaternion.LookRotation(hits[0].normal);
-           gunCursorTargeter.transform.position = hits[0].point;
-//gunCursorTargeter.rotation=Quaternion.LookRotation(closestPosition);
-//gunCursorTargeter.transform.position=closestPosition;
 
-            return true;
-        }
-        else
-        {
-            return false;
+                gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.red;
+                gunCursorTargeter.rotation = Quaternion.LookRotation(hits[0].normal);
+                gunCursorTargeter.transform.position = hits[0].point;
+            }
         }
     }
 
-    private void gunCursor()
+    float gunCursor()
     {
         RaycastHit[] hits;
         hits = Physics.RaycastAll(transform.position, transform.forward, maxDistance);
@@ -111,7 +110,7 @@ public class TargetingCursor : MonoBehaviour
 
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i].collider.gameObject.layer != 8)
+            if (hits[i].collider.gameObject.layer != 8 && hits[i].collider.gameObject.tag!="Enemy")
             {
                 newDistance = hits[i].distance;
                 //Aligns cursor with the hit surface, this gets replaced with every next hit that is closer
@@ -129,12 +128,11 @@ public class TargetingCursor : MonoBehaviour
                         gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.green;
                     }
 
-
                     oldDistance = newDistance;
                 }
-
-                //break;
             }
         }
+
+        return oldDistance;
     }
 }

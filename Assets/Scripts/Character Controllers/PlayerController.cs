@@ -6,24 +6,28 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed;
     public float jumpForce;
+    public float ladderJumpOff = .3f;
     public float gravityScale;
     public float rotateSpeed;
     public float playerHeight = 1;
     public float floatingSpeed = 3;
     public float sinkLevel = .5f;
     public float swimsinklevel = .5f;
-    [Range(1.01f, 2)] public float waterDamper=2;
-    [Range(1.01f, 4)] public float DampingMultiplyer=2;
+    public float climbSpeed = 7;
+    [Range(1.01f, 2)] public float waterDamper = 2;
+    [Range(1.01f, 4)] public float DampingMultiplyer = 2;
 
     private bool grounded = true;
     private CharacterController Controller;
     private Vector3 moveDirection;
     private float waterTable = -100;
-   
+
 
     private bool inWater = false;
     private bool onLadder = false;
     private bool swimming = false;
+
+    private Quaternion ladderOrientation = new Quaternion();
 
     // Start is called before the first frame update
     void Start()
@@ -40,8 +44,6 @@ public class PlayerController : MonoBehaviour
         moveDirection = transform.forward * Input.GetAxis("Vertical") +
                         transform.right * Input.GetAxis("Horizontal");
 
-        moveDirection *= moveSpeed;
-        moveDirection.y = yStore;
 
         if (inWater)
         {
@@ -51,7 +53,6 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-
                 swimming = false;
             }
         }
@@ -63,25 +64,51 @@ public class PlayerController : MonoBehaviour
 
         if (onLadder)
         {
-        }
-        else if (inWater && swimming)
-        {
-            if (waterTable+ sinkLevel > transform.position.y)
+            moveDirection *= climbSpeed;
+            if (-moveDirection.z < 0 && Controller.isGrounded)
             {
-                moveDirection.y = moveDirection.y - DampingMultiplyer*Time.deltaTime*(moveDirection.y / waterDamper);
-                moveDirection.y = moveDirection.y - Physics.gravity.y * Time.deltaTime *(Mathf.Abs(waterTable - (transform.position.y - swimsinklevel)));
+                onLadder = false;
             }
             else
             {
-                moveDirection.y = moveDirection.y - DampingMultiplyer*Time.deltaTime * (moveDirection.y / waterDamper);
-                moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime * (Mathf.Abs(waterTable - (transform.position.y - swimsinklevel)));
+                Controller.Move(new Vector3(0, -moveDirection.z, 0) * Time.deltaTime);
+            }
 
+            if (Input.GetButtonDown("Jump"))
+            {
+                moveDirection.y = jumpForce;
+                Controller.Move(new Vector3(0, moveDirection.y, ladderJumpOff) * Time.deltaTime);
+            }
+            else if (Input.GetButton("Jump"))
+            {
+                moveDirection.y = yStore;
+            }
+        }
+        else if (inWater && swimming)
+        {
+            moveDirection *= moveSpeed;
+            moveDirection.y = yStore;
+            if (waterTable + sinkLevel > transform.position.y)
+            {
+                moveDirection.y =
+                    moveDirection.y - DampingMultiplyer * Time.deltaTime * (moveDirection.y / waterDamper);
+                moveDirection.y = moveDirection.y - Physics.gravity.y * Time.deltaTime *
+                                  (Mathf.Abs(waterTable - (transform.position.y - swimsinklevel)));
+            }
+            else
+            {
+                moveDirection.y =
+                    moveDirection.y - DampingMultiplyer * Time.deltaTime * (moveDirection.y / waterDamper);
+                moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime *
+                                  (Mathf.Abs(waterTable - (transform.position.y - swimsinklevel)));
             }
 
             Controller.Move(moveDirection * Time.deltaTime);
         }
         else
         {
+            moveDirection *= moveSpeed;
+            moveDirection.y = yStore;
             if (Controller.isGrounded)
             {
                 moveDirection.y = 0f;
@@ -98,6 +125,21 @@ public class PlayerController : MonoBehaviour
     public bool getGrounded()
     {
         return grounded;
+    }
+
+    public bool getSwimming()
+    {
+        return swimming;
+    }
+
+    public bool getOnLadder()
+    {
+        return onLadder;
+    }
+
+    public Quaternion getLadderOrientation()
+    {
+        return ladderOrientation;
     }
 
     bool isGrounded()
@@ -122,13 +164,14 @@ public class PlayerController : MonoBehaviour
         // Filter by using specific layers for this object and "others" instead of using tags
         if (other.tag == "Water")
         {
-            waterTable = other.gameObject.transform.position.y - sinkLevel;
+            waterTable = other.gameObject.transform.position.y;
 
             inWater = true;
         }
 
         if (other.tag == "Ladder")
         {
+            ladderOrientation = other.gameObject.transform.rotation;
             onLadder = true;
         }
     }
