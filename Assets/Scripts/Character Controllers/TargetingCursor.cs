@@ -88,10 +88,12 @@ public class TargetingCursor : MonoBehaviour
                 RaycastHit[] hits;
                 hits = Physics.RaycastAll(transform.position, closestPosition - transform.position, oldDistance + 1);
 
-
-                gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.red;
-                gunCursorTargeter.rotation = Quaternion.LookRotation(hits[0].normal);
-                gunCursorTargeter.transform.position = hits[0].point;
+                if (hits.Length != 0)
+                {
+                    gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.red;
+                    gunCursorTargeter.rotation = Quaternion.LookRotation(hits[0].normal);
+                    gunCursorTargeter.transform.position = hits[0].point;
+                }
             }
         }
     }

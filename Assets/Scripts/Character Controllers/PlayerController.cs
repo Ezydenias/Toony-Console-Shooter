@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,18 +16,25 @@ public class PlayerController : MonoBehaviour
     public float sinkLevel = .5f;
     public float swimsinklevel = .5f;
     public float climbSpeed = 7;
+    public float ledgeGrabBounds = .5f;
+    public float ledgeJumpHeightY = .5f;
+    public float ledgeJumpTravel = .5f;
+    public float ledgeJumpSpeed = 3f;
     [Range(1.01f, 2)] public float waterDamper = 2;
     [Range(1.01f, 4)] public float DampingMultiplyer = 2;
 
     private bool grounded = true;
     private CharacterController Controller;
     private Vector3 moveDirection;
+    private Vector3 ledgePosition = new Vector3(-1000, -1000, -1000);
     private float waterTable = -100;
 
-
+    private int ledgeMode = 0;
     private bool inWater = false;
     private bool onLadder = false;
     private bool swimming = false;
+    private bool onLedge = false;
+    private bool ledgeGrab = false;
 
     private Quaternion ladderOrientation = new Quaternion();
 
@@ -36,13 +45,13 @@ public class PlayerController : MonoBehaviour
         moveDirection = new Vector3(0f, 0f, 0f);
     }
 
+
     // Update is called once per frame
     void Update()
     {
         grounded = isGrounded();
         var yStore = moveDirection.y;
-        moveDirection = transform.forward * Input.GetAxis("Vertical") +
-                        transform.right * Input.GetAxis("Horizontal");
+        moveDirection = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
 
 
         if (inWater)
@@ -61,8 +70,48 @@ public class PlayerController : MonoBehaviour
             swimming = false;
         }
 
+        if (onLedge && moveDirection.z <= .3f && (ledgePosition.y - ledgeGrabBounds) < transform.position.y &&
+            transform.position.y < (ledgePosition.y + ledgeGrabBounds))
+        {
+            ledgeGrab = true;
+        }
 
-        if (onLadder)
+
+        if (ledgeGrab)
+        {
+            if (transform.position.y < (ledgePosition.y + Controller.height + ledgeJumpHeightY) && ledgeMode == 0)
+            {
+                moveDirection.y = ledgeJumpSpeed;
+                Controller.Move(moveDirection * Time.deltaTime);
+            }
+            else
+            {
+                moveDirection.y = 0;
+                ledgeMode = 1;
+            }
+
+            if (Mathf.Abs(transform.position.z - ledgePosition.z) < ledgeJumpTravel)
+            {
+                if (ledgeMode == 1)
+                {
+                    moveDirection = transform.forward * ledgeJumpSpeed;
+                    moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime * gravityScale;
+                    Controller.Move(moveDirection * Time.deltaTime);
+                }
+            }
+            else
+            {
+                ledgeMode = 2;
+            }
+
+            
+            if (ledgeMode == 2)
+            {
+                ledgeMode = 0;
+                ledgeGrab = false;
+            }
+        }
+        else if (onLadder)
         {
             moveDirection *= climbSpeed;
             if (-moveDirection.z < 0 && Controller.isGrounded)
@@ -137,6 +186,16 @@ public class PlayerController : MonoBehaviour
         return onLadder;
     }
 
+    public bool getOnLedge()
+    {
+        return onLedge;
+    }
+
+    public bool getLedgeGrab()
+    {
+        return ledgeGrab;
+    }
+
     public Quaternion getLadderOrientation()
     {
         return ladderOrientation;
@@ -174,6 +233,12 @@ public class PlayerController : MonoBehaviour
             ladderOrientation = other.gameObject.transform.rotation;
             onLadder = true;
         }
+
+        if (other.tag == "Ledge")
+        {
+            ledgePosition = other.gameObject.transform.position;
+            onLedge = true;
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -190,6 +255,11 @@ public class PlayerController : MonoBehaviour
         if (other.tag == "Ladder")
         {
             onLadder = false;
+        }
+
+        if (other.tag == "Ledge")
+        {
+            onLedge = false;
         }
     }
 }
