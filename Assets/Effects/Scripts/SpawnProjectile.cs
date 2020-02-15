@@ -13,7 +13,6 @@ public class SpawnProjectile : MonoBehaviour
     public Transform targeterCursor;
     public bool player = false;
     public float targetingError = .1f;
-    public float maxPitch = 4;
     public GameObject Character;
 
     private GameObject effectToSpawn;
@@ -25,23 +24,36 @@ public class SpawnProjectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-
-        effectToFlash = vfxFlash[0];
+        effectToFlash = null;
+        effectToSound = null;
         effectToSpawn = vfx[0];
-        effectToSound = vfxSound[0];
+        if (vfxFlash.Count > 0)
+            effectToFlash = vfxFlash[0];
+        if (vfxSound.Count > 0)
+            effectToSound = vfxSound[0];
     }
-        // Update is called once per frame
+
+    // Update is called once per frame
     void Update()
     {
-        if (player && !Character.GetComponent<PlayerController>().getSwimming() && !Character.GetComponent<PlayerController>().getOnLadder())
+        if (player && !Character.GetComponent<PlayerController>().getSwimming() &&
+            !Character.GetComponent<PlayerController>().getOnLadder())
         {
             if (Input.GetButton("Fire1") && Time.time >= timeToFire)
             {
-                int i = Random.Range(0, vfxSound.Count);
-                effectToSound = vfxSound[i];
-                i = Random.Range(0, vfxFlash.Count);
-                effectToFlash = vfxFlash[i];
+                int i = 0;
+                if (vfxSound.Count > 0)
+                {
+                    i = Random.Range(0, vfxSound.Count);
+                    effectToSound = vfxSound[i];
+                }
+
+                if (vfxFlash.Count > 0)
+                {
+                    i = Random.Range(0, vfxFlash.Count);
+                    effectToFlash = vfxFlash[i];
+                }
+
                 timeToFire = Time.time + 1 / effectToSpawn.GetComponent<ProjectileMove>().fireRate;
                 SpawnVFX();
             }
@@ -56,15 +68,22 @@ public class SpawnProjectile : MonoBehaviour
 
         if (firePoint != null)
         {
-            float Error = targetingError*(Vector3.Distance(firePoint.transform.position,targeterCursor.position)/10);
-            vfxSound = Instantiate(effectToSound, firePoint.transform.position, Quaternion.identity);
-            vfxFlash = Instantiate(effectToFlash, firePoint.transform.position, Quaternion.identity);
+            float Error = targetingError *
+                          (Vector3.Distance(firePoint.transform.position, targeterCursor.position) / 10);
+            if (effectToSound != null)
+                vfxSound = Instantiate(effectToSound, firePoint.transform.position, Quaternion.identity);
+
             //vfxFlash.transform.localPosition=new Vector3(0,-.1f,0);
             vfx = Instantiate(effectToSpawn, firePoint.transform.position, Quaternion.identity);
-            vfx.transform.LookAt(targeterCursor.position+(new Vector3(Random.Range(-Error, Error), Random.Range(-Error, Error), Random.Range(-Error, Error))));
-            
-            vfxFlash.transform.Rotate(Vector3.up, Random.Range(0, 360));
-            vfxFlash.transform.parent = transform;
+            vfx.transform.LookAt(targeterCursor.position + (new Vector3(Random.Range(-Error, Error),
+                                     Random.Range(-Error, Error), Random.Range(-Error, Error))));
+
+            if (effectToFlash != null)
+            {
+                vfxFlash = Instantiate(effectToFlash, firePoint.transform.position, Quaternion.identity);
+                vfxFlash.transform.Rotate(Vector3.up, Random.Range(0, 360));
+                vfxFlash.transform.parent = transform;
+            }
         }
         else
         {
