@@ -1,4 +1,4 @@
-﻿Shader "FurFighter/ToonShader"
+﻿Shader "FurFighter/ToonShaderTest"
 {
 	Properties
 	{
@@ -10,6 +10,7 @@
 		_RimColor("Rim Color", Color) = (1,1,1,1)
 		_RimAmount("Rim Amount", Range(0, 1)) = 0.716
 		_RimThreshold("Rim Threshold", Range(0, 1)) = 0.1
+		_DepthMap("Depth Map", 2D) = "white" {}
 	}
 		SubShader
 	{
@@ -35,6 +36,7 @@
 				float4 vertex : POSITION;
 				float4 uv : TEXCOORD0;
 				float3 normal : NORMAL;
+				float3 tangent : TANGENT;
 			};
 
 			struct v2f
@@ -43,6 +45,7 @@
 				float2 uv : TEXCOORD0;
 				float3 worldNormal : NORMAL;
 				float3 viewDir : TEXCOORD1;
+				float3 tangentViewDir : TEXCOORD3;
 				SHADOW_COORDS(2)
 			};
 
@@ -54,6 +57,8 @@
 			float4 _RimColor;
 			float _RimAmount;
 			float _RimThreshold;
+			sampler2D _DepthMap;
+			float height_scale;
 
 			v2f vert(appdata v)
 			{
@@ -63,11 +68,31 @@
 				o.worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.viewDir = WorldSpaceViewDir(v.vertex);
 				TRANSFER_SHADOW(o)
+
+					float3 worldVertexPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+					float3 worldViewDir = worldVertexPos - _WorldSpaceCameraPos;
+
+					float3 worldNormal = UnityObjectToWorldNormal(v.normal);
+					float3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+					float3 worldBitangent = cross(worldNormal, worldTangent) * v.tangent * unity_WorldTransformParams.w;
+
+					//Use dot products instead of building the matrix
+					o.tangentViewDir = float3(
+						dot(worldViewDir, worldTangent),
+						dot(worldViewDir, worldNormal),
+						dot(worldViewDir, worldBitangent)
+						);
 				return o;
 			}
 
 			float4 _Color;
 
+			float2 ParallaxMapping(float2 texCoords, float3 viewDir)
+			{
+				float height = tex2D(_DepthMap, texCoords).r;
+				float2 p = viewDir.xy / viewDir.z * (height * height_scale);
+				return texCoords - p;
+			}
 
 			float4 frag(v2f i) : SV_Target
 			{
@@ -76,7 +101,14 @@
 				float shadow = SHADOW_ATTENUATION(i);
 				float lightIntensity = smoothstep(0, 0.01, NdotL* shadow);
 				float4 light = lightIntensity * _LightColor0;
-				float4 sample = tex2D(_MainTex, i.uv);
+
+
+
+				//float3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
+				//float3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
+				//float2 texCoords = ParallaxMapping(i.uv, viewDir);
+			float2 texCoords = ParallaxMapping(i.uv, i.tangentViewDir);
+				float4 sample = tex2D(_MainTex, texCoords);
 				float3 viewDir = normalize(i.viewDir);
 
 				float3 halfVector = normalize(_WorldSpaceLightPos0 + viewDir);
