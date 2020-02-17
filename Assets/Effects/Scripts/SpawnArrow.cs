@@ -60,6 +60,7 @@ public class SpawnArrow : MonoBehaviour
         if (size >= 100)
         {
             currentArrow = Instantiate(effectToSpawn, firePoint.transform.position, Quaternion.identity);
+            currentArrow.transform.parent = transform;
             currentArrow.transform.LookAt(targeterCursor.position);
             loaded = true;
         }
@@ -77,6 +78,7 @@ public class SpawnArrow : MonoBehaviour
             if (currentArrow)
             {
                 Instantiate(SoundToShot, firePoint.transform.position, Quaternion.identity);
+                currentArrow.transform.parent = null;
                 currentArrow.GetComponent<DestroyByTime>().enabled = true;
                 currentArrow.GetComponent<ProjectileMove>().enabled = true;
                 fireSpeed = currentArrow.GetComponent<ProjectileMove>().speed;

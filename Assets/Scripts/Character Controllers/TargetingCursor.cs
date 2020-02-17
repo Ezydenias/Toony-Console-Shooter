@@ -114,7 +114,7 @@ public class TargetingCursor : MonoBehaviour
 
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i].collider.gameObject.layer != 8 && hits[i].collider.gameObject.tag != "Enemy")
+            if (hits[i].collider.gameObject.layer != 8 && hits[i].collider.gameObject.tag != "Enemy" || hits[i].collider.gameObject.layer != 8 && enemyList.Count == 0)
             {
                 newDistance = hits[i].distance;
                 //Aligns cursor with the hit surface, this gets replaced with every next hit that is closer

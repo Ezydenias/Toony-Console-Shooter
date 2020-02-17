@@ -9,7 +9,7 @@ public class AddGun : MonoBehaviour
     public GameObject Gun;
     void Start()
     {
-        GameObject Gun = GameObject.Find("Da Gun");
+//        GameObject Gun = GameObject.Find("Da Gun");
         Gun.transform.position = EzyHand.transform.position;
         
         Gun.transform.rotation = EzyHand.transform.rotation;

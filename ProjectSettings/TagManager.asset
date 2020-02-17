@@ -10,6 +10,10 @@ TagManager:
   - Enemy
   - Water
   - Ladder
+  - Ledge
+  - CharacterSwitch
+  - Reflective
+  - Bubble
   layers:
   - Default
   - TransparentFX
