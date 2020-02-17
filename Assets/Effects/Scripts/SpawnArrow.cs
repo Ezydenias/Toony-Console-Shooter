@@ -28,6 +28,8 @@ public class SpawnArrow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (!Character && player == true)
+            Character = GameObject.Find("Player");
         effectToSpawn = Arrows[0];
         SoundToShot = ShotSound[0];
         SoundToDraw = DrawSound[0];

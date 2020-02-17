@@ -162,9 +162,9 @@ public class CameraController : MonoBehaviour
         if (!target.GetComponent<PlayerController>().getOnLadder())
         {
             if (invertX)
-                target.transform.Rotate(0, -horizontal, 0);
+                target.transform.Rotate(0, -horizontal* Time.deltaTime, 0);
             else
-                target.transform.Rotate(0, horizontal, 0);
+                target.transform.Rotate(0, horizontal* Time.deltaTime, 0);
         }
         else
         {
@@ -174,9 +174,9 @@ public class CameraController : MonoBehaviour
         }
 
         if (invertY)
-            pivot.Rotate(vertical, 0, 0);
+            pivot.Rotate(vertical* Time.deltaTime, 0, 0);
         else
-            pivot.Rotate(-vertical, 0, 0);
+            pivot.Rotate(-vertical* Time.deltaTime, 0, 0);
 
         ////Limit up/down camera rotation
         if (pivot.rotation.eulerAngles.x > maxViewAngle && pivot.rotation.eulerAngles.x < 180)

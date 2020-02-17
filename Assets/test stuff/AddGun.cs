@@ -15,6 +15,7 @@ public class AddGun : MonoBehaviour
         Gun.transform.rotation = EzyHand.transform.rotation;
         Gun.transform.parent = EzyHand.transform;
         Gun.transform.Translate(-.1f, 0, 0);
+        Gun.transform.Rotate(0,0,-3);
     }
 
     // Update is called once per frame
