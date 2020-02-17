@@ -24,6 +24,8 @@ public class SpawnProjectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (!Character&&player==true)
+            Character = GameObject.Find("Player");
         effectToFlash = null;
         effectToSound = null;
         effectToSpawn = vfx[0];

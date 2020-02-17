@@ -14,6 +14,7 @@ public class ProjectileHit : MonoBehaviour
             if(co.gameObject.GetComponent<EnemyStatus>().life<0)
                 Destroy(co.gameObject);
         }
+        GetComponent<PopSound>().pop();
         Destroy(this.gameObject);
     }
 }

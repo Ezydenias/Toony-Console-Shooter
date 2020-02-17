@@ -15,6 +15,8 @@ public class TargetingCursor : MonoBehaviour
 
     void Start()
     {
+        if (!Player)
+            Player = GameObject.Find("Player");
     }
 
     // Update is called once per frame
@@ -83,7 +85,7 @@ public class TargetingCursor : MonoBehaviour
 
         if (enemyList.Count != 0)
         {
-            if (oldDistance<=cursorPosition)
+            if (oldDistance <= cursorPosition)
             {
                 RaycastHit[] hits;
                 hits = Physics.RaycastAll(transform.position, closestPosition - transform.position, oldDistance + 1);
@@ -112,7 +114,7 @@ public class TargetingCursor : MonoBehaviour
 
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i].collider.gameObject.layer != 8 && hits[i].collider.gameObject.tag!="Enemy")
+            if (hits[i].collider.gameObject.layer != 8 && hits[i].collider.gameObject.tag != "Enemy")
             {
                 newDistance = hits[i].distance;
                 //Aligns cursor with the hit surface, this gets replaced with every next hit that is closer

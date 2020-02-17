@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 8138775138631317005}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 8138775139294812038}
   m_RootOrder: 1
@@ -4779,7 +4779,7 @@ Transform:
   m_GameObject: {fileID: 8138775138829012144}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 8138775139294812038}
   m_RootOrder: 2
@@ -4916,7 +4916,7 @@ Transform:
   m_GameObject: {fileID: 8138775138997491674}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 8138775139294812038}
   m_RootOrder: 0
@@ -9656,6 +9656,7 @@ GameObject:
   - component: {fileID: 8138775139294812036}
   - component: {fileID: 8138775139294812037}
   - component: {fileID: -3891392899614902231}
+  - component: {fileID: 8353738774438072311}
   m_Layer: 8
   m_Name: Projectile 1
   m_TagString: Projectile
@@ -9671,7 +9672,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8138775139294812040}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.3062795, y: 0.089, z: 0.96086645}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 8138775138997491675}
@@ -9705,7 +9706,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.1, y: 0.1, z: 0.1}
+  m_Size: {x: 0.1, y: 0.1, z: 0.2}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &8138775139294812036
 Rigidbody:
@@ -9749,3 +9750,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 100
+--- !u!114 &8353738774438072311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8138775139294812040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2eb238361f655a468e0360a5a9364b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vfxSound:
+  - {fileID: 7490100452365354347, guid: 36c5c4938a6cdd044b8143f63c49bb10, type: 3}
+  - {fileID: 7490100452365354347, guid: 54f063f2feb6ea344a0ff1a365225e3a, type: 3}
+  - {fileID: 7490100452365354347, guid: 5b8a12b9bcfc6dd45992f76a2184ce38, type: 3}
+  - {fileID: 7490100452365354347, guid: 4620f9b79bc3c3c41821984a11bcad85, type: 3}
