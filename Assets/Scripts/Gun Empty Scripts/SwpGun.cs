@@ -1,4 +1,5 @@
-﻿using System.CodeDom.Compiler;
+﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,16 +7,28 @@ using UnityEngine;
 public class SwpGun : MonoBehaviour
 {
     public GameObject gun1;
-    public GameObject gun2;
-    public GameObject gun3;
-    public GameObject gun4;
+    public bool gun1Active = true;
+    public GameObject string1;
+    public bool string1Active = true;
+    public GameObject blaster1;
+    public bool blaster1Active = true;
+    public GameObject bubbler1;
+    public bool bubbler1Active = true;
 
-    public int gun = 0;
     // Start is called before the first frame update
 
     private float lastButton = 0;
+    private PlayerWeapons gun;
 
+    private PlayerWeapons lastgun;
     // Update is called once per frame
+
+    void Start()
+    {
+        lastgun = (PlayerWeapons) Enum.GetNames(typeof(PlayerWeapons)).Length - 1;
+        Debug.Log(lastgun);
+    }
+
     void Update()
     {
         float temp = Input.GetAxis("NextGun");
@@ -23,41 +36,61 @@ public class SwpGun : MonoBehaviour
         if (temp != lastButton)
         {
             lastButton = temp;
-            if (temp != 0)
+            while (temp != 0)
             {
                 {
                     gun += (int) temp;
                     if (gun < 0)
                     {
-                        gun = 4;
+                        gun = lastgun;
                     }
-                    if (gun > 4)
+
+                    if (gun > lastgun)
                     {
                         gun = 0;
                     }
                 }
                 gun1.SetActive(false);
-                gun2.SetActive(false);
-                gun3.SetActive(false);
-                gun4.SetActive(false);
+                string1.SetActive(false);
+                blaster1.SetActive(false);
+                bubbler1.SetActive(false);
                 switch (gun)
                 {
-                    case 1:
-                        gun1.SetActive(true);
+                    case PlayerWeapons.Guns:
+                        if (gun1Active)
+                        {
+                            gun1.SetActive(true);
+                            temp = 0;
+                        }
+
                         break;
-                    case 2:
-                        gun2.SetActive(true);
+                    case PlayerWeapons.Strings:
+                        if (string1Active)
+                        {
+                            string1.SetActive(true);
+                            temp = 0;
+                        }
+
                         break;
-                    case 3:
-                        gun3.SetActive(true);
+                    case PlayerWeapons.Blaster:
+                        if (blaster1Active)
+                        {
+                            blaster1.SetActive(true);
+                            temp = 0;
+                        }
+
                         break;
-                    case 4:
-                        gun4.SetActive(true);
+
+                    case PlayerWeapons.Bubblers:
+                        if (bubbler1Active)
+                        {
+                            bubbler1.SetActive(true);
+                            temp = 0;
+                        }
+
                         break;
                 }
             }
         }
-
-        Debug.Log(gun);
     }
 }

@@ -9,22 +9,29 @@ public class SpawnProjectile : MonoBehaviour
     public List<GameObject> vfx = new List<GameObject>();
     public List<GameObject> vfxSound = new List<GameObject>();
     public List<GameObject> vfxFlash = new List<GameObject>();
+    public List<GameObject> emptyMag = new List<GameObject>();
     public float fireOffset;
     public Transform targeterCursor;
     public bool player = false;
     public float targetingError = .1f;
     public GameObject Character;
+    public GameObject gunEmpty;
+    public AmmoTypes ammo;
 
     private GameObject effectToSpawn;
     private GameObject effectToSound;
     private GameObject effectToFlash;
+    private GameObject effectToClick;
     private float timeToFire = 0;
+    private bool fullMag = true;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        if (!Character&&player==true)
+        if (gunEmpty == null)
+            gunEmpty = GameObject.Find("Gun Empty");
+        if (!Character && player == true)
             Character = GameObject.Find("Player");
         effectToFlash = null;
         effectToSound = null;
@@ -33,6 +40,8 @@ public class SpawnProjectile : MonoBehaviour
             effectToFlash = vfxFlash[0];
         if (vfxSound.Count > 0)
             effectToSound = vfxSound[0];
+        if (emptyMag.Count > 0)
+            effectToClick = emptyMag[0];
     }
 
     // Update is called once per frame
@@ -41,23 +50,35 @@ public class SpawnProjectile : MonoBehaviour
         if (player && !Character.GetComponent<PlayerController>().getSwimming() &&
             !Character.GetComponent<PlayerController>().getOnLadder())
         {
-            if (Input.GetButton("Fire1") && Time.time >= timeToFire)
+            if (Input.GetButton("Fire1") && Time.time >= timeToFire && (fullMag=gunEmpty.GetComponent<AmmunitionInventory>().subAmmunition(ammo)))
             {
+                Debug.Log("here");
+                    int i = 0;
+                    if (vfxSound.Count > 0)
+                    {
+                        i = Random.Range(0, vfxSound.Count);
+                        effectToSound = vfxSound[i];
+                    }
+
+                    if (vfxFlash.Count > 0)
+                    {
+                        i = Random.Range(0, vfxFlash.Count);
+                        effectToFlash = vfxFlash[i];
+                    }
+
+                    timeToFire = Time.time + 1 / effectToSpawn.GetComponent<ProjectileMove>().fireRate;
+                    SpawnVFX();
+
+            }
+            else if(Input.GetButtonDown("Fire1") && fullMag==false)
+            {
+                Debug.Log("now here");
                 int i = 0;
-                if (vfxSound.Count > 0)
-                {
-                    i = Random.Range(0, vfxSound.Count);
-                    effectToSound = vfxSound[i];
-                }
 
-                if (vfxFlash.Count > 0)
-                {
-                    i = Random.Range(0, vfxFlash.Count);
-                    effectToFlash = vfxFlash[i];
-                }
+                i = Random.Range(0, emptyMag.Count);
+                effectToSound = emptyMag[i];
 
-                timeToFire = Time.time + 1 / effectToSpawn.GetComponent<ProjectileMove>().fireRate;
-                SpawnVFX();
+                clickVFX();
             }
         }
     }
@@ -91,5 +112,12 @@ public class SpawnProjectile : MonoBehaviour
         {
             Debug.Log("No Fire Point");
         }
+    }
+
+    private void clickVFX()
+    {
+        GameObject vfxClick;
+
+        vfxClick = Instantiate(effectToClick, firePoint.transform.position, Quaternion.identity);
     }
 }

@@ -107,11 +107,15 @@ MonoBehaviour:
   vfxFlash:
   - {fileID: 3283480438922934888, guid: 0bc7c3f475eaefe44b1c61f9c7896d24, type: 3}
   - {fileID: 6588363408539325048, guid: ee8df7e6d34314e428be5bc2c3e8b163, type: 3}
+  emptyMag:
+  - {fileID: 8488186446616806749, guid: 27875a2c9d1aa2745acd1d7d97158eaa, type: 3}
   fireOffset: 0
   targeterCursor: {fileID: 9194157566788281689}
   player: 1
   targetingError: 0.2
   Character: {fileID: 0}
+  gunEmpty: {fileID: 0}
+  ammo: 2
 --- !u!1 &4852770090823424613
 GameObject:
   m_ObjectHideFlags: 0
