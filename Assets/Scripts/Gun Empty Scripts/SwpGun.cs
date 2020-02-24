@@ -2,6 +2,7 @@
 using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
+using GameEnumSpace;
 using UnityEngine;
 
 public class SwpGun : MonoBehaviour

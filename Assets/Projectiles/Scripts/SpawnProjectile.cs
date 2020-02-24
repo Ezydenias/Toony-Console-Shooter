@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GameEnumSpace;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -23,7 +24,6 @@ public class SpawnProjectile : MonoBehaviour
     private GameObject effectToFlash;
     private GameObject effectToClick;
     private float timeToFire = 0;
-    private bool fullMag = true;
 
 
     // Start is called before the first frame update
@@ -50,7 +50,7 @@ public class SpawnProjectile : MonoBehaviour
         if (player && !Character.GetComponent<PlayerController>().getSwimming() &&
             !Character.GetComponent<PlayerController>().getOnLadder())
         {
-            if (Input.GetButton("Fire1") && Time.time >= timeToFire && (fullMag=gunEmpty.GetComponent<AmmunitionInventory>().subAmmunition(ammo)))
+            if (Input.GetButton("Fire1") && Time.time >= timeToFire && gunEmpty.GetComponent<AmmunitionInventory>().subAmmunition(ammo))
             {
                 Debug.Log("here");
                     int i = 0;
@@ -70,7 +70,7 @@ public class SpawnProjectile : MonoBehaviour
                     SpawnVFX();
 
             }
-            else if(Input.GetButtonDown("Fire1") && fullMag==false)
+            else if(Input.GetButtonDown("Fire1") && !gunEmpty.GetComponent<AmmunitionInventory>().magEmpty(ammo))
             {
                 Debug.Log("now here");
                 int i = 0;

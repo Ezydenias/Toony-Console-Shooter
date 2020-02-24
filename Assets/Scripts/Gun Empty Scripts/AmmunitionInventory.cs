@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameEnumSpace;
 using UnityEngine;
 
 public class AmmunitionInventory : MonoBehaviour
@@ -49,6 +50,7 @@ public class AmmunitionInventory : MonoBehaviour
                     Arrows = maxArrows;
                 break;
         }
+
         return true;
     }
 
@@ -76,9 +78,55 @@ public class AmmunitionInventory : MonoBehaviour
                     return false;
                 Arrows--;
                 break;
-
         }
 
         return true;
+    }
+
+    //Checks if Magazine is Empty, False when Empty
+    public bool magEmpty(AmmoTypes ammoType)
+    {
+        switch (ammoType)
+        {
+            case AmmoTypes.Battery:
+                if (Batteries == 0)
+                    return false;
+                break;
+            case AmmoTypes.Bubbles:
+                if (Bubbles == 0)
+                    return false;
+                break;
+            case AmmoTypes.Bullets:
+                if (Bullets == 0)
+                    return false;
+                break;
+            case AmmoTypes.Arrows:
+                if (Arrows == 0)
+                    return false;
+                break;
+        }
+
+        return true;
+    }
+
+    public int currentAmmoSize(AmmoTypes ammoType)
+    {
+        switch (ammoType)
+        {
+            case AmmoTypes.Battery:
+                return Batteries;
+                break;
+            case AmmoTypes.Bubbles:
+                return Bubbles;
+                break;
+            case AmmoTypes.Bullets:
+                return Bullets;
+                break;
+            case AmmoTypes.Arrows:
+                return Arrows;
+                break;
+        }
+
+        return -1;
     }
 }
