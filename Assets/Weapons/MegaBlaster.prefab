@@ -67,6 +67,8 @@ MonoBehaviour:
   - {fileID: 5237146036826174240}
   - {fileID: 5237146036826174242}
   Player: {fileID: 0}
+  gunEmpty: {fileID: 0}
+  Ammo: 0
 --- !u!65 &5237146036826174247
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -416,7 +418,12 @@ MonoBehaviour:
   maxLength: 100
   targeterCursor: {fileID: 4383965545660738997}
   damagePerSecond: 1000
+  energyPerSecond: 15
   Player: {fileID: 0}
+  gunEmpty: {fileID: 0}
+  emptyMag:
+  - {fileID: 8488186446616806749, guid: 27875a2c9d1aa2745acd1d7d97158eaa, type: 3}
+  Ammo: 0
 --- !u!1001 &1618830165996847399
 PrefabInstance:
   m_ObjectHideFlags: 0

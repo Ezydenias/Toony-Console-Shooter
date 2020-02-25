@@ -27,7 +27,6 @@ public class SwpGun : MonoBehaviour
     void Start()
     {
         lastgun = (PlayerWeapons) Enum.GetNames(typeof(PlayerWeapons)).Length - 1;
-        Debug.Log(lastgun);
     }
 
     void Update()

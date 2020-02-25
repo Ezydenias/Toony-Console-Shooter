@@ -52,8 +52,7 @@ public class SpawnProjectile : MonoBehaviour
         {
             if (Input.GetButton("Fire1") && Time.time >= timeToFire && gunEmpty.GetComponent<AmmunitionInventory>().subAmmunition(ammo))
             {
-                Debug.Log("here");
-                    int i = 0;
+                int i = 0;
                     if (vfxSound.Count > 0)
                     {
                         i = Random.Range(0, vfxSound.Count);

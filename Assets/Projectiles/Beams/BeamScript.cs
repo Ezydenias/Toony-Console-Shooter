@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GameEnumSpace;
 using UnityEngine;
 
 [RequireComponent(typeof(LineAlignment))]
@@ -11,13 +12,19 @@ public class BeamScript : MonoBehaviour
 
     public Transform targeterCursor;
     public float damagePerSecond = 100;
+    public float energyPerSecond = 5;
     public GameObject Player;
 
+    public GameObject gunEmpty;
+    public List<GameObject> emptyMag = new List<GameObject>();
+    public AmmoTypes Ammo;
 
     private LineRenderer lineRenderer;
     private Ray ray;
     private RaycastHit hit;
     private Vector3 direction;
+    private float timeElapsed = 0f;
+    private GameObject effectToClick;
 
     private void Awake()
     {
@@ -26,6 +33,11 @@ public class BeamScript : MonoBehaviour
 
     private void Start()
     {
+        energyPerSecond = 1 / energyPerSecond;
+        if (gunEmpty == null)
+            gunEmpty = GameObject.Find("Gun Empty");
+        if (emptyMag.Count > 0)
+            effectToClick = emptyMag[0];
         Player = GameObject.Find("Player");
     }
 
@@ -35,7 +47,7 @@ public class BeamScript : MonoBehaviour
         if (!Player.GetComponent<PlayerController>().getSwimming() &&
             !Player.GetComponent<PlayerController>().getOnLadder())
         {
-            if (Input.GetButton("Fire1"))
+            if (Input.GetButton("Fire1") && gunEmpty.GetComponent<AmmunitionInventory>().magEmpty(Ammo))
             {
                 lineRenderer.enabled = true;
                 transform.LookAt(targeterCursor.position);
@@ -83,15 +95,32 @@ public class BeamScript : MonoBehaviour
                             ray.origin + ray.direction * remainingLength);
                     }
                 }
+
+                timeElapsed += Time.deltaTime;
+                if (timeElapsed >= energyPerSecond)
+                {
+                    gunEmpty.GetComponent<AmmunitionInventory>().subAmmunition(Ammo);
+                    timeElapsed = 0;
+                }
+
             }
             else
             {
                 lineRenderer.enabled = false;
+                if (Input.GetButtonDown("Fire1"))
+                    clickVFX();
             }
         }
         else
         {
             lineRenderer.enabled = false;
         }
+    }
+
+    private void clickVFX()
+    {
+        GameObject vfxClick;
+
+        vfxClick = Instantiate(effectToClick, transform.position, Quaternion.identity);
     }
 }

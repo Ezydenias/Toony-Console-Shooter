@@ -5,7 +5,7 @@ using UnityEngine;
 public class ProjectileHit : MonoBehaviour
 {
     public float damage = 100;
-    // Start is called before the first frame update
+
     void OnCollisionEnter(Collision co)
     {
         if (co.gameObject.tag == "Enemy")

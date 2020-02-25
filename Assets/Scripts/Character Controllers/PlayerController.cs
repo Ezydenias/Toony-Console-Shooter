@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
                 ledgeMode = 2;
             }
 
-            
+
             if (ledgeMode == 2)
             {
                 ledgeMode = 0;
