@@ -3918,6 +3918,8 @@ MonoBehaviour:
   stopAtDistanceToPlayer: 1.06
   reactAtDistanceToPlayer: 1.48
   moveSpeed: 1
+  reactionSpeed: 0.5
+  rotationSpeed: 0.5
   animator: {fileID: 0}
 --- !u!95 &8823067529145582376
 Animator:
@@ -4009,6 +4011,8 @@ MonoBehaviour:
   stopAtDistanceToPlayer: 3.01
   reactAtDistanceToPlayer: 1.5
   moveSpeed: 5.49
+  reactionSpeed: 0.5
+  rotationSpeed: 0.5
   maxFleeDistance: 4.8
 --- !u!143 &8823067529240481869
 CharacterController:
@@ -4180,6 +4184,8 @@ GameObject:
   - component: {fileID: 8823067529628227122}
   - component: {fileID: 205505748}
   - component: {fileID: 8823067529628227120}
+  - component: {fileID: 8823067529628227123}
+  - component: {fileID: 8823067529628227124}
   m_Layer: 9
   m_Name: Enemy (3)
   m_TagString: Enemy
@@ -4194,7 +4200,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8823067529628227119}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbe335425f065fd44ab6eadc24faddbd, type: 3}
   m_Name: 
@@ -4203,9 +4209,11 @@ MonoBehaviour:
   stopAtDistanceToPlayer: 1.39
   reactAtDistanceToPlayer: 1.47
   moveSpeed: 1
+  reactionSpeed: 0.5
+  rotationSpeed: 4.5
   animator: {fileID: 0}
-  maximumShootsFired: 10
-  chanceToFire: 50
+  maximumShootingTime: 5
+  chanceToFire: 80
 --- !u!135 &8823067529628227121
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4217,7 +4225,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 5.61
+  m_Radius: 8.93
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!95 &8823067529628227122
 Animator:
@@ -4238,3 +4246,40 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &8823067529628227123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8823067529628227119}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23e9c7492503a9046bd1a167addea4a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 0}
+  stopAtDistanceToPlayer: 1.86
+  reactAtDistanceToPlayer: 1.27
+  moveSpeed: 2.7
+  reactionSpeed: 0.01
+  rotationSpeed: 3
+  maxFleeDistance: 5.47
+--- !u!114 &8823067529628227124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8823067529628227119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31affa99cf2fd4f4bba03ddd12070900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Player: {fileID: 0}
+  stopAtDistanceToPlayer: 1.88
+  reactAtDistanceToPlayer: 2.01
+  moveSpeed: 3.44
+  reactionSpeed: 0.01
+  rotationSpeed: 10.3

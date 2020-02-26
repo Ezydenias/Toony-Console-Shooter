@@ -8,13 +8,16 @@ public class followPlayerOnSight : MonoBehaviour
     [Range(1f, 5f)] public float stopAtDistanceToPlayer = 1f;
     [Range(1f, 5f)] public float reactAtDistanceToPlayer = 1f;
     [Range(.01f, 10f)] public float moveSpeed = 1f;
+    [Range(.01f, 3f)] public float reactionSpeed = .5f;
+    [Range(1f, 20f)] public float rotationSpeed = 2f;
 
     private bool chasePlayer = false;
     protected bool closeToPlayer = false;
     private CharacterController Controller;
     private Vector3? knownPlayerPosition = null;
     protected Vector3 moveDirection = new Vector3();
-    private Transform lookDirection;
+    private Quaternion lookDirection = Quaternion.identity;
+    private float timer = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +30,6 @@ public class followPlayerOnSight : MonoBehaviour
         if (!Player)
             Player = GameObject.Find("Player");
         Controller = GetComponent<CharacterController>();
-        lookDirection = transform;
     }
 
     // Update is called once per frame
@@ -43,7 +45,8 @@ public class followPlayerOnSight : MonoBehaviour
     {
         if (knownPlayerPosition != null)
         {
-            moveDirection = (Vector3) (knownPlayerPosition - transform.position);
+//            moveDirection = (Vector3) (knownPlayerPosition - transform.position);
+            moveDirection = transform.forward;
             moveDirection.y = 0;
             if (Vector3.Distance(transform.position, (Vector3) knownPlayerPosition) <= stopAtDistanceToPlayer)
             {
@@ -67,14 +70,15 @@ public class followPlayerOnSight : MonoBehaviour
 
     protected void orientateCharacter()
     {
+        transform.rotation = Quaternion.Lerp(transform.rotation, lookDirection, Time.deltaTime * rotationSpeed);
+    }
+
+    private void setCharacterOrientation()
+    {
         if (knownPlayerPosition != null)
         {
-            lookDirection.LookAt((Vector3) knownPlayerPosition);
-            lookDirection.rotation.eulerAngles.Set(0, lookDirection.rotation.eulerAngles.y,
-                lookDirection.rotation.eulerAngles.z);
+            lookDirection = Quaternion.LookRotation((Vector3) (knownPlayerPosition - transform.position));
         }
-
-        transform.rotation = Quaternion.Lerp(transform.rotation, lookDirection.rotation, 100 * Time.deltaTime);
     }
 
     protected void moveCharacter()
@@ -101,9 +105,12 @@ public class followPlayerOnSight : MonoBehaviour
 
     protected void getPlayerPosition()
     {
-        if (seesPlayer())
+        if (seesPlayer() && ((timer += Time.deltaTime) >= reactionSpeed))
         {
-            knownPlayerPosition = Player.transform.position;
+            timer = 0;
+            setCharacterOrientation();
+            knownPlayerPosition = new Vector3(Player.transform.position.x, transform.position.y,
+                Player.transform.position.z);
         }
 
 
@@ -122,14 +129,13 @@ public class followPlayerOnSight : MonoBehaviour
                 Player.transform.position));
         float oldDistance = 100;
         float newDistance;
-        bool see=false;
+        bool see = false;
         for (int i = 0; i < hits.Length; i++)
         {
             if ((newDistance = Vector3.Distance(transform.position, hits[i].transform.position)) <= oldDistance)
             {
                 oldDistance = newDistance;
                 see = (hits[i].collider.tag == "Player") ? true : false;
-                
             }
         }
 

@@ -52,12 +52,11 @@ public class EnemyGuned : EnemyMelee
 
     private void getTurretMode()
     {
-        Debug.Log(time);
         if ((time += Time.deltaTime) >= 1)
         {
             time = 0;
             int chance = Random.Range(0, 100);
-            if (chance <= chanceToFire && seesPlayer() && seesPlayer())
+            if (chance <= chanceToFire && seesPlayer())
             {
                 moveDirection = Vector3.zero;
                 shoots = Random.Range(0, maximumShootingTime);
