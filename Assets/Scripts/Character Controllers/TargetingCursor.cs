@@ -104,7 +104,7 @@ public class TargetingCursor : MonoBehaviour
     {
         RaycastHit[] hits;
         hits = Physics.RaycastAll(transform.position, transform.forward, maxDistance);
-        Debug.DrawRay(transform.position, transform.forward, Color.green);
+//        Debug.DrawRay(transform.position, transform.forward, Color.green);
 
         float oldDistance = 100;
         float newDistance = 100;

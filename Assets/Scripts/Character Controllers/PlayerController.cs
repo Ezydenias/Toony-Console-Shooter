@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
     private bool grounded = true;
     private CharacterController Controller;
-    private Vector3 moveDirection;
+    private Vector3 moveDirection = new Vector3(0f, 0f, 0f);
     private Vector3 ledgePosition = new Vector3(-1000, -1000, -1000);
     private float waterTable = -100;
 
@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         Controller = GetComponent<CharacterController>();
-        moveDirection = new Vector3(0f, 0f, 0f);
     }
 
 
@@ -52,7 +51,6 @@ public class PlayerController : MonoBehaviour
         grounded = isGrounded();
         var yStore = moveDirection.y;
         moveDirection = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
-
 
         if (inWater)
         {
@@ -160,7 +158,7 @@ public class PlayerController : MonoBehaviour
             moveDirection.y = yStore;
             if (Controller.isGrounded)
             {
-                moveDirection.y = 0f;
+                //moveDirection.y = 0f;
                 if (Input.GetButtonDown("Jump"))
                     moveDirection.y = jumpForce;
             }
@@ -261,5 +259,10 @@ public class PlayerController : MonoBehaviour
         {
             onLedge = false;
         }
+    }
+
+    public void triggerJump()
+    {
+        moveDirection.y = jumpForce;
     }
 }

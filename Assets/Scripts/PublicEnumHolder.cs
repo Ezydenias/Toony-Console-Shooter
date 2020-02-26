@@ -21,7 +21,7 @@ namespace GameEnumSpace
         Bubblers
     }
 
-    public enum superSize
+    public enum SuperSize
     {
         Small,
         Medium,
@@ -34,6 +34,12 @@ namespace GameEnumSpace
         Egyptian,
         Halloween,
         Space
+    }
+
+    public enum PlayerCharacter
+    {
+        Ezy,
+        Beeko
     }
 }
 
