@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using GameEnumSpace;
 using UnityEngine;
-using UnityEngine.XR;
 
 public class SpawnProjectile : MonoBehaviour
 {
@@ -17,6 +16,7 @@ public class SpawnProjectile : MonoBehaviour
     public float targetingError = .1f;
     public GameObject Character;
     public GameObject gunEmpty;
+    public GameObject playerEmpty;
     public AmmoTypes ammo;
 
     private GameObject effectToSpawn;
@@ -29,10 +29,12 @@ public class SpawnProjectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(!playerEmpty)
+            playerEmpty=GameObject.Find("Player Empty");
         if (gunEmpty == null)
             gunEmpty = GameObject.Find("Gun Empty");
         if (!Character && player == true)
-            Character = GameObject.Find("Player");
+            Character = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
         effectToFlash = null;
         effectToSound = null;
         effectToSpawn = vfx[0];
@@ -47,6 +49,11 @@ public class SpawnProjectile : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!Character.activeSelf)
+        {
+            Character = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
+        }
+//        Debug.Log(Character.name);
         if (player && !Character.GetComponent<PlayerController>().getSwimming() &&
             !Character.GetComponent<PlayerController>().getOnLadder())
         {

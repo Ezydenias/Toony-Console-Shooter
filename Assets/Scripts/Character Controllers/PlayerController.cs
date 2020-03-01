@@ -48,10 +48,52 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float yStore = 0;
+        standardUpdate(ref yStore);
+
+
+        if (ledgeGrab)
+        {
+            ledgeGrabMethod();
+        }
+        else if (onLadder)
+        {
+            ladderMethod(yStore);
+        }
+        else if (inWater && swimming)
+        {
+            swimmingMethode(yStore);
+        }
+        else
+        {
+            walkingMethode(yStore);
+        }
+    }
+
+    protected float standardUpdate(ref float yStore)
+    {
         grounded = isGrounded();
-        var yStore = moveDirection.y;
+        yStore = moveDirection.y;
         moveDirection = transform.forward * Input.GetAxis("Vertical") + transform.right * Input.GetAxis("Horizontal");
 
+        checkSwimming();
+
+        checkOnLedge();
+
+        return yStore;
+    }
+
+    protected void checkOnLedge()
+    {
+        if (onLedge && moveDirection.z <= .3f && (ledgePosition.y - ledgeGrabBounds) < transform.position.y &&
+            transform.position.y < (ledgePosition.y + ledgeGrabBounds))
+        {
+            ledgeGrab = true;
+        }
+    }
+
+    protected void checkSwimming()
+    {
         if (inWater)
         {
             if (waterTable > transform.position.y)
@@ -66,106 +108,6 @@ public class PlayerController : MonoBehaviour
         else
         {
             swimming = false;
-        }
-
-        if (onLedge && moveDirection.z <= .3f && (ledgePosition.y - ledgeGrabBounds) < transform.position.y &&
-            transform.position.y < (ledgePosition.y + ledgeGrabBounds))
-        {
-            ledgeGrab = true;
-        }
-
-
-        if (ledgeGrab)
-        {
-            if (transform.position.y < (ledgePosition.y + Controller.height + ledgeJumpHeightY) && ledgeMode == 0)
-            {
-                moveDirection.y = ledgeJumpSpeed;
-                Controller.Move(moveDirection * Time.deltaTime);
-            }
-            else
-            {
-                moveDirection.y = 0;
-                ledgeMode = 1;
-            }
-
-            if (Mathf.Abs(transform.position.z - ledgePosition.z) < ledgeJumpTravel)
-            {
-                if (ledgeMode == 1)
-                {
-                    moveDirection = transform.forward * ledgeJumpSpeed;
-                    moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime * gravityScale;
-                    Controller.Move(moveDirection * Time.deltaTime);
-                }
-            }
-            else
-            {
-                ledgeMode = 2;
-            }
-
-
-            if (ledgeMode == 2)
-            {
-                ledgeMode = 0;
-                ledgeGrab = false;
-            }
-        }
-        else if (onLadder)
-        {
-            moveDirection *= climbSpeed;
-            if (-moveDirection.z < 0 && Controller.isGrounded)
-            {
-                onLadder = false;
-            }
-            else
-            {
-                Controller.Move(new Vector3(0, -moveDirection.z, 0) * Time.deltaTime);
-            }
-
-            if (Input.GetButtonDown("Jump"))
-            {
-                moveDirection.y = jumpForce;
-                Controller.Move(new Vector3(0, moveDirection.y, ladderJumpOff) * Time.deltaTime);
-            }
-            else if (Input.GetButton("Jump"))
-            {
-                moveDirection.y = yStore;
-            }
-        }
-        else if (inWater && swimming)
-        {
-            moveDirection *= moveSpeed;
-            moveDirection.y = yStore;
-            if (waterTable + sinkLevel > transform.position.y)
-            {
-                moveDirection.y =
-                    moveDirection.y - DampingMultiplyer * Time.deltaTime * (moveDirection.y / waterDamper);
-                moveDirection.y = moveDirection.y - Physics.gravity.y * Time.deltaTime *
-                                  (Mathf.Abs(waterTable - (transform.position.y - swimsinklevel)));
-            }
-            else
-            {
-                moveDirection.y =
-                    moveDirection.y - DampingMultiplyer * Time.deltaTime * (moveDirection.y / waterDamper);
-                moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime *
-                                  (Mathf.Abs(waterTable - (transform.position.y - swimsinklevel)));
-            }
-
-            Controller.Move(moveDirection * Time.deltaTime);
-        }
-        else
-        {
-            moveDirection *= moveSpeed;
-            moveDirection.y = yStore;
-            if (Controller.isGrounded)
-            {
-                //moveDirection.y = 0f;
-                if (Input.GetButtonDown("Jump"))
-                    moveDirection.y = jumpForce;
-            }
-
-
-            moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime * gravityScale;
-            Controller.Move(moveDirection * Time.deltaTime);
         }
     }
 
@@ -264,5 +206,101 @@ public class PlayerController : MonoBehaviour
     public void triggerJump()
     {
         moveDirection.y = jumpForce;
+    }
+
+    protected void ledgeGrabMethod()
+    {
+        if (transform.position.y < (ledgePosition.y + Controller.height + ledgeJumpHeightY) && ledgeMode == 0)
+        {
+            moveDirection.y = ledgeJumpSpeed;
+            Controller.Move(moveDirection * Time.deltaTime);
+        }
+        else
+        {
+            moveDirection.y = 0;
+            ledgeMode = 1;
+        }
+
+        if (Mathf.Abs(transform.position.z - ledgePosition.z) < ledgeJumpTravel)
+        {
+            if (ledgeMode == 1)
+            {
+                moveDirection = transform.forward * ledgeJumpSpeed;
+                moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime * gravityScale;
+                Controller.Move(moveDirection * Time.deltaTime);
+            }
+        }
+        else
+        {
+            ledgeMode = 2;
+        }
+
+
+        if (ledgeMode == 2)
+        {
+            ledgeMode = 0;
+            ledgeGrab = false;
+        }
+    }
+
+    protected void ladderMethod(float yStore)
+    {
+        moveDirection *= climbSpeed;
+        if (-moveDirection.z < 0 && Controller.isGrounded)
+        {
+            onLadder = false;
+        }
+        else
+        {
+            Controller.Move(new Vector3(0, -moveDirection.z, 0) * Time.deltaTime);
+        }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            moveDirection.y = jumpForce;
+            Controller.Move(new Vector3(0, moveDirection.y, ladderJumpOff) * Time.deltaTime);
+        }
+        else if (Input.GetButton("Jump"))
+        {
+            moveDirection.y = yStore;
+        }
+    }
+
+    protected void swimmingMethode(float yStore)
+    {
+        moveDirection *= moveSpeed;
+        moveDirection.y = yStore;
+        if (waterTable + sinkLevel > transform.position.y)
+        {
+            moveDirection.y =
+                moveDirection.y - DampingMultiplyer * Time.deltaTime * (moveDirection.y / waterDamper);
+            moveDirection.y = moveDirection.y - Physics.gravity.y * Time.deltaTime *
+                              (Mathf.Abs(waterTable - (transform.position.y - swimsinklevel)));
+        }
+        else
+        {
+            moveDirection.y =
+                moveDirection.y - DampingMultiplyer * Time.deltaTime * (moveDirection.y / waterDamper);
+            moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime *
+                              (Mathf.Abs(waterTable - (transform.position.y - swimsinklevel)));
+        }
+
+        Controller.Move(moveDirection * Time.deltaTime);
+    }
+
+    protected void walkingMethode(float yStore)
+    {
+        moveDirection *= moveSpeed;
+        moveDirection.y = yStore;
+        if (Controller.isGrounded)
+        {
+            //moveDirection.y = 0f;
+            if (Input.GetButtonDown("Jump"))
+                moveDirection.y = jumpForce;
+        }
+
+
+        moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime * gravityScale;
+        Controller.Move(moveDirection * Time.deltaTime);
     }
 }

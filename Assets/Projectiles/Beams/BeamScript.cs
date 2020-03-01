@@ -14,6 +14,7 @@ public class BeamScript : MonoBehaviour
     public float damagePerSecond = 100;
     public float energyPerSecond = 5;
     public GameObject Player;
+    public GameObject playerEmpty;
 
     public GameObject gunEmpty;
     public List<GameObject> emptyMag = new List<GameObject>();
@@ -33,17 +34,23 @@ public class BeamScript : MonoBehaviour
 
     private void Start()
     {
+        if (!playerEmpty)
+            playerEmpty = GameObject.Find("Player Empty");
         energyPerSecond = 1 / energyPerSecond;
         if (gunEmpty == null)
             gunEmpty = GameObject.Find("Gun Empty");
         if (emptyMag.Count > 0)
             effectToClick = emptyMag[0];
-        Player = GameObject.Find("Player");
+        Player = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!Player.activeSelf)
+        {
+            Player = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
+        }
         if (!Player.GetComponent<PlayerController>().getSwimming() &&
             !Player.GetComponent<PlayerController>().getOnLadder())
         {

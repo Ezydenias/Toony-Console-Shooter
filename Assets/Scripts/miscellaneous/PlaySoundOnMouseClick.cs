@@ -8,20 +8,27 @@ public class PlaySoundOnMouseClick : MonoBehaviour
 {
     public List<AudioSource> Sources;
     public GameObject Player;
+    public GameObject playerEmpty;
     public GameObject gunEmpty;
     public AmmoTypes Ammo = AmmoTypes.Battery;
 
     // Start is called before the first frame update
     void Start()
     {
+        if (!playerEmpty)
+            playerEmpty = GameObject.Find("Player Empty");
         if (gunEmpty == null)
             gunEmpty = GameObject.Find("Gun Empty");
-        Player = GameObject.Find("Player");
+        Player = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!Player)
+        {
+            Player = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
+        }
         if (!Player.GetComponent<PlayerController>().getSwimming() &&
             !Player.GetComponent<PlayerController>().getOnLadder())
         {

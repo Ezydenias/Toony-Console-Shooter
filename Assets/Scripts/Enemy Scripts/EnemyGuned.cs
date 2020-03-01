@@ -56,7 +56,7 @@ public class EnemyGuned : EnemyMelee
         {
             time = 0;
             int chance = Random.Range(0, 100);
-            if (chance <= chanceToFire && seesPlayer())
+            if (chance <= chanceToFire && seesPlayer(currentTarget))
             {
                 moveDirection = Vector3.zero;
                 shoots = Random.Range(0, maximumShootingTime);

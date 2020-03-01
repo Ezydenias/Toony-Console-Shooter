@@ -5,23 +5,30 @@ using UnityEngine;
 public class TargetingCursor : MonoBehaviour
 {
     public Transform gunCursorTargeter;
-    public GameObject Player;
+    public GameObject PlayerEmpty;
     public float maxDistance = 20;
 
     private List<GameObject> enemyList = new List<GameObject>();
 
+    private GameObject Player;
     // Start is called before the first frame update
 
 
     void Start()
     {
-        if (!Player)
-            Player = GameObject.Find("Player");
+        if (!PlayerEmpty)
+            PlayerEmpty = GameObject.Find("Player Empty");
+        Player = PlayerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!Player)
+        {
+            Player = PlayerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
+        }
+
         if (!Player.GetComponent<PlayerController>().getSwimming() &&
             !Player.GetComponent<PlayerController>().getOnLadder())
         {
@@ -114,25 +121,28 @@ public class TargetingCursor : MonoBehaviour
 
         for (int i = 0; i < hits.Length; i++)
         {
-            if (hits[i].collider.gameObject.layer != 8 && hits[i].collider.gameObject.tag != "Enemy" || hits[i].collider.gameObject.layer != 8 && enemyList.Count == 0)
+            if (hits[i].collider.gameObject.layer != 8 && hits[i].collider.gameObject.layer!=2)
             {
-                newDistance = hits[i].distance;
-                //Aligns cursor with the hit surface, this gets replaced with every next hit that is closer
-                //testing showed that the array of hits isn't built in a logical order
-                if (newDistance < oldDistance)
+                if (hits[i].collider.gameObject.tag != "Enemy" || enemyList.Count == 0)
                 {
-                    gunCursorTargeter.rotation = Quaternion.LookRotation(hits[i].normal);
-                    gunCursorTargeter.transform.position = hits[i].point;
-                    if (hits[i].collider.gameObject.layer == 9)
+                    newDistance = hits[i].distance;
+                    //Aligns cursor with the hit surface, this gets replaced with every next hit that is closer
+                    //testing showed that the array of hits isn't built in a logical order
+                    if (newDistance < oldDistance)
                     {
-                        gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.red;
-                    }
-                    else
-                    {
-                        gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.green;
-                    }
+                        gunCursorTargeter.rotation = Quaternion.LookRotation(hits[i].normal);
+                        gunCursorTargeter.transform.position = hits[i].point;
+                        if (hits[i].collider.gameObject.layer == 9)
+                        {
+                            gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.red;
+                        }
+                        else
+                        {
+                            gunCursorTargeter.GetComponent<MeshRenderer>().material.color = Color.green;
+                        }
 
-                    oldDistance = newDistance;
+                        oldDistance = newDistance;
+                    }
                 }
             }
         }

@@ -15,6 +15,7 @@ TagManager:
   - Reflective
   - Bubble
   - Ammunition
+  - ChangerRoom
   layers:
   - Default
   - TransparentFX

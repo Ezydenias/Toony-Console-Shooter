@@ -12,6 +12,7 @@ public class SpawnArrow : MonoBehaviour
     public Transform targeterCursor;
     public bool player = false;
     public GameObject Character;
+    public GameObject playerEmpty;
     public float drawSpeed = 1;
 
     private float fireSpeed;
@@ -28,8 +29,10 @@ public class SpawnArrow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (!playerEmpty)
+            playerEmpty = GameObject.Find("Player Empty");
         if (!Character && player == true)
-            Character = GameObject.Find("Player");
+            Character = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
         effectToSpawn = Arrows[0];
         SoundToShot = ShotSound[0];
         SoundToDraw = DrawSound[0];
@@ -39,6 +42,10 @@ public class SpawnArrow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!Character.activeSelf)
+        {
+            Character = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
+        }
         if (shooting)
         {
             Shoot();

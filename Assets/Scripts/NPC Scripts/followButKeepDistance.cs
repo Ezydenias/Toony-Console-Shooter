@@ -26,13 +26,22 @@ public class followButKeepDistance : followPlayerOnSight
 
     private void flee()
     {
-        if (Vector3.Distance(transform.position, Player.transform.position) >= maxFleeDistance)
+        foreach (GameObject Player in PlayerList)
         {
-            moveDirection = Vector3.zero;
-            closeToPlayer = false;
+            if (Vector3.Distance(transform.position, Player.transform.position) >= maxFleeDistance)
+            {
+                moveDirection = Vector3.zero;
+                closeToPlayer = false;
+            }
         }
+//
+//        if (Vector3.Distance(parent.transform.position, currentTarget.transform.position) >= maxFleeDistance)
+//        {
+//            moveDirection = Vector3.zero;
+//            closeToPlayer = false;
+//        }
 
-        moveDirection = (transform.position - Player.transform.position);
+        moveDirection = (parent.transform.position - currentTarget.transform.position);
         moveDirection.y = 0;
     }
 }

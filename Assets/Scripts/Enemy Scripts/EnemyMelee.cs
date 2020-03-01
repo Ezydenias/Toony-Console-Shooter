@@ -13,7 +13,7 @@ public class EnemyMelee : followPlayerOnSight
     {
         parentStartFunction();
         if (!animator)
-            animator = GetComponent<Animator>();
+            animator = parent.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -36,7 +36,7 @@ public class EnemyMelee : followPlayerOnSight
     protected void melee()
     {
         animator.SetTrigger("punch");
-        transform.position = Vector3.zero;
+        parent.transform.position = Vector3.zero;
         if (meleeAttack == true && !this.animator.GetCurrentAnimatorStateInfo(0).IsName("New State 0"))
         {
             meleeAttack = false;

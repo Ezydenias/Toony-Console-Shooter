@@ -9,14 +9,18 @@ public class tentChangerCharacter : MonoBehaviour
     public PlayerCharacter charakter;
     public bool enabled = true;
     [Range(1.01f, 10)] public float shrink = 1f;
-    [Space(20)]
-    public GameObject Character;
+    [Space(20)] public GameObject Character;
     public GameObject Tent;
-
+    public GameObject playerEmpty;
+    public GameObject floatingHeadEmpty;
     private bool shrinking = false;
 
     void Start()
     {
+        if (!playerEmpty)
+            playerEmpty = GameObject.Find("Player Empty");
+        if (!floatingHeadEmpty)
+            floatingHeadEmpty = GameObject.Find("Floating Head Empty");
     }
 
     // Update is called once per frame
@@ -28,7 +32,7 @@ public class tentChangerCharacter : MonoBehaviour
 
     void changeAnimation()
     {
-        float newShrink= shrink*Time.deltaTime;
+        float newShrink = shrink * Time.deltaTime;
         transform.localScale -= new Vector3(newShrink, newShrink, newShrink);
         if (transform.localScale.y <= 0)
         {
@@ -48,13 +52,14 @@ public class tentChangerCharacter : MonoBehaviour
     {
         if (enabled = true && other.gameObject.tag == "Player")
         {
-
             try
             {
-                other.GetComponent<PlayerController>().triggerJump();
-                other.GetComponent<CharacterChanger>().activePlayer = PlayerCharacter.Beeko;
-                other.GetComponent<CharacterChanger>().changeCharacter();
-                Debug.Log("player");
+//                other.GetComponent<PlayerController>().triggerJump();
+                playerEmpty.GetComponent<CharacterChanger>().activePlayer = PlayerCharacter.Beeko;
+                playerEmpty.GetComponent<CharacterChanger>().changeCharacter();
+                floatingHeadEmpty.GetComponent<floatingHeadChanger>().currentCharacter = PlayerCharacter.Beeko;
+                floatingHeadEmpty.GetComponent<floatingHeadChanger>().changeHead();
+                //                Debug.Log("player");
                 Character.active = false;
                 shrinking = true;
                 enabled = false;
@@ -64,8 +69,7 @@ public class tentChangerCharacter : MonoBehaviour
                 Character.active = true;
                 shrinking = false;
                 enabled = true;
-                Debug.Log("not player");
-
+//                Debug.Log("not player");
             }
         }
     }

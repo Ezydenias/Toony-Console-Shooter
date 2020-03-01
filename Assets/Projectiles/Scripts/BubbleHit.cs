@@ -10,7 +10,7 @@ public class BubbleHit : MonoBehaviour
     // Start is called before the first frame update
     void OnCollisionEnter(Collision co)
     {
-        Debug.Log(co.gameObject.tag);
+//        Debug.Log(co.gameObject.tag);
         if (co.gameObject.tag == "Enemy")
         {
             
