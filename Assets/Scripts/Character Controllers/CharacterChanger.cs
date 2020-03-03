@@ -127,6 +127,7 @@ public class CharacterChanger : MonoBehaviour
             lastPosition = temp.transform.position;
             lastRotation = temp.transform.rotation;
         }
+
 //        Debug.Log(temp);
 //        Debug.Log(lastPosition);
 //        Debug.Log(lastRotation);
@@ -149,5 +150,25 @@ public class CharacterChanger : MonoBehaviour
     public Quaternion getRotation()
     {
         return lastRotation;
+    }
+
+    public bool checkPlayerControllerStat()
+    {
+        switch (activePlayer)
+        {
+            case PlayerCharacter.Ezy:
+                if (!Ezy.GetComponent<EzyController>().getSwimming() &&
+                    !Ezy.GetComponent<EzyController>().getOnLadder() &&
+                    !Ezy.GetComponent<EzyController>().getShoving())
+                    return true;
+                    break;
+            case PlayerCharacter.Beeko:
+                if (!Beeko.GetComponent<PlayerController>().getSwimming() &&
+                    !Beeko.GetComponent<PlayerController>().getOnLadder())
+                    return true;
+                break;
+        }
+
+        return false;
     }
 }

@@ -5,26 +5,25 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public GameObject target;
-    public float rotationSpeed;
-
+    public float rotationSpeed=1000f;
     public Transform pivot;
-
     //public Transform gunCursorTargeter;
     //public Vector3 cursorOffset;
     //public float maxCursorDistance = 10;
-    public float maxViewAngle;
-    public float minViewAngle;
-    public bool invertX;
-    public bool invertY;
+    public float maxViewAngle=30;
+    public float minViewAngle=20;
+    public bool invertX=false;
+    public bool invertY=false;
     public float cameraDistance = -10;
-    public float smoothTime = 1;
-    public float smoothTimeCammeraRecenter = .5f;
-    public float cameraHitsOffsetX = .5f;
+    public float smoothTime = .1f;
+    public float smoothTimeCammeraRecenter = .05f;
+    public float cameraHitsOffsetX = 1f;
     public float cameraHitsOffsetY = .5f;
     public float verticalPlayerFollowDeadzone = 4f;
     public float CameraPlayerFollowDeadzone = .1f;
-    public float playerHeight = 1;
-    public float ladderFacingSmoothing = 0.5f;
+    public float playerHeight = 1.5f;
+    public float ladderFacingSmoothing = 0.1f;
+
 
     //private Transform target;
     private Vector3 offset;
@@ -33,6 +32,10 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        if (!pivot)
+        {
+            pivot = transform.parent;
+        }
         //target = gameObject.transform;
     }
 
@@ -159,19 +162,7 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        if (!target.GetComponent<PlayerController>().getOnLadder())
-        {
-            if (invertX)
-                target.transform.Rotate(0, -horizontal* Time.deltaTime, 0);
-            else
-                target.transform.Rotate(0, horizontal* Time.deltaTime, 0);
-        }
-        else
-        {
-            target.transform.rotation = Quaternion.Lerp(target.transform.rotation,
-                Quaternion.Euler(0, target.GetComponent<PlayerController>().getLadderOrientation().eulerAngles.y, 0),
-                ladderFacingSmoothing);
-        }
+        playerRotation(horizontal);
 
         if (invertY)
             pivot.Rotate(vertical* Time.deltaTime, 0, 0);
@@ -200,5 +191,22 @@ public class CameraController : MonoBehaviour
 
 
         transform.LookAt(pivot);
+    }
+
+    protected virtual void playerRotation(float horizontal)
+    {
+        if (!target.GetComponent<PlayerController>().getOnLadder())
+        {
+            if (invertX)
+                target.transform.Rotate(0, -horizontal * Time.deltaTime, 0);
+            else
+                target.transform.Rotate(0, horizontal * Time.deltaTime, 0);
+        }
+        else
+        {
+            target.transform.rotation = Quaternion.Lerp(target.transform.rotation,
+                Quaternion.Euler(0, target.GetComponent<PlayerController>().getLadderOrientation().eulerAngles.y, 0),
+                ladderFacingSmoothing);
+        }
     }
 }

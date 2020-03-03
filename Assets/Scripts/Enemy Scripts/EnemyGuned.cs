@@ -11,7 +11,6 @@ public class EnemyGuned : EnemyMelee
     [Range(10, 80)] public int chanceToFire = 50;
 
     private bool shooting = false;
-
     private float shoots;
     private float time = 0;
 

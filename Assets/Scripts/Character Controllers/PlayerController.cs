@@ -6,35 +6,35 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed;
-    public float jumpForce;
-    public float ladderJumpOff = .3f;
-    public float gravityScale;
-    public float rotateSpeed;
+    public float moveSpeed=7f;
+    public float jumpForce=10f;
+    public float ladderJumpOff = 3f;
+    public float gravityScale=1.5f;
+    public float rotateSpeed=50;
     public float playerHeight = 1;
-    public float floatingSpeed = 3;
-    public float sinkLevel = .5f;
-    public float swimsinklevel = .5f;
+//    public float floatingSpeed = .5f;
+    public float sinkLevel = -.5f;
+    public float swimsinklevel = .7f;
     public float climbSpeed = 7;
     public float ledgeGrabBounds = .5f;
-    public float ledgeJumpHeightY = .5f;
-    public float ledgeJumpTravel = .5f;
+    public float ledgeJumpHeightY = -.2f;
+    public float ledgeJumpTravel = 1f;
     public float ledgeJumpSpeed = 3f;
     [Range(1.01f, 2)] public float waterDamper = 2;
-    [Range(1.01f, 4)] public float DampingMultiplyer = 2;
+    [Range(1.01f, 4)] public float DampingMultiplyer = 4;
 
     private bool grounded = true;
-    private CharacterController Controller;
-    private Vector3 moveDirection = new Vector3(0f, 0f, 0f);
+    protected CharacterController Controller;
+    protected Vector3 moveDirection = new Vector3(0f, 0f, 0f);
     private Vector3 ledgePosition = new Vector3(-1000, -1000, -1000);
     private float waterTable = -100;
 
     private int ledgeMode = 0;
-    private bool inWater = false;
-    private bool onLadder = false;
-    private bool swimming = false;
+    protected bool inWater = false;
+    protected bool onLadder = false;
+    protected bool swimming = false;
     private bool onLedge = false;
-    private bool ledgeGrab = false;
+    protected bool ledgeGrab = false;
 
     private Quaternion ladderOrientation = new Quaternion();
 
@@ -157,8 +157,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     void OnTriggerEnter(Collider other)
+    {
+        standardOnTriggerrEnter(other);
+    }
+
+    protected void standardOnTriggerrEnter(Collider other)
     {
         // Filter by using specific layers for this object and "others" instead of using tags
         if (other.tag == "Water")
@@ -183,9 +187,14 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+     standardOnTriggerrExit(other);   
+    }
+
+    protected void standardOnTriggerrExit(Collider other)
+    {
         //Debug.Log("and gone");
         // Filter by using specific layers for this object and "others" instead of using tags
-//        Debug.Log("left");
+        //        Debug.Log("left");
         if (other.tag == "Water")
         {
             inWater = false;
@@ -292,15 +301,21 @@ public class PlayerController : MonoBehaviour
     {
         moveDirection *= moveSpeed;
         moveDirection.y = yStore;
+
+        jumpMethode();
+
+        moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime * gravityScale;
+        Controller.Move(moveDirection * Time.deltaTime);
+    }
+
+    protected virtual void jumpMethode()
+    {
         if (Controller.isGrounded)
         {
             //moveDirection.y = 0f;
             if (Input.GetButtonDown("Jump"))
                 moveDirection.y = jumpForce;
         }
-
-
-        moveDirection.y = moveDirection.y + Physics.gravity.y * Time.deltaTime * gravityScale;
-        Controller.Move(moveDirection * Time.deltaTime);
     }
+
 }

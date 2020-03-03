@@ -54,8 +54,7 @@ public class SpawnProjectile : MonoBehaviour
             Character = playerEmpty.GetComponent<CharacterChanger>().getCurrentCharacter();
         }
 //        Debug.Log(Character.name);
-        if (player && !Character.GetComponent<PlayerController>().getSwimming() &&
-            !Character.GetComponent<PlayerController>().getOnLadder())
+        if (player && playerEmpty.GetComponent<CharacterChanger>().checkPlayerControllerStat())
         {
             if (Input.GetButton("Fire1") && Time.time >= timeToFire && gunEmpty.GetComponent<AmmunitionInventory>().subAmmunition(ammo))
             {
