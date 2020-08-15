@@ -7,6 +7,8 @@ using UnityEngine;
 
 public class SwpGun : MonoBehaviour
 {
+    public SwpMelee MeeleEmpty;
+    [Space(10)]
     public GameObject gun1;
     public bool gun1Active = true;
     public GameObject string1;
@@ -20,13 +22,14 @@ public class SwpGun : MonoBehaviour
 
     private float lastButton = 0;
     private PlayerWeapons gun;
-
     private PlayerWeapons lastgun;
     // Update is called once per frame
 
     void Start()
     {
         lastgun = (PlayerWeapons) Enum.GetNames(typeof(PlayerWeapons)).Length - 1;
+        if (!MeeleEmpty)
+            MeeleEmpty = GameObject.Find("Player Empty").GetComponent<SwpMelee>();
     }
 
     void Update()
@@ -50,12 +53,14 @@ public class SwpGun : MonoBehaviour
                         gun = 0;
                     }
                 }
-                gun1.SetActive(false);
-                string1.SetActive(false);
-                blaster1.SetActive(false);
-                bubbler1.SetActive(false);
+                
+                deactivateAll();
+
                 switch (gun)
                 {
+                    case PlayerWeapons.Hand:
+                        MeeleEmpty.ActivateMelee();
+                        break;
                     case PlayerWeapons.Guns:
                         if (gun1Active)
                         {
@@ -92,5 +97,19 @@ public class SwpGun : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void deactivateAll()
+    {
+        MeeleEmpty.DeactivateMelee();
+        gun1.SetActive(false);
+        string1.SetActive(false);
+        blaster1.SetActive(false);
+        bubbler1.SetActive(false);
+    }
+
+    public PlayerWeapons getCurrentGun()
+    {
+        return gun;
     }
 }

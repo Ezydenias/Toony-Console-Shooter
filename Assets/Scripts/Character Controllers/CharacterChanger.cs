@@ -8,17 +8,20 @@ public class CharacterChanger : MonoBehaviour
     public PlayerCharacter activePlayer = PlayerCharacter.Ezy;
     public Themes currentTheme = Themes.Default;
     [Space(20)] public GameObject gunEmpty;
-    [Space(40)] public GameObject EzyHand;
-    public GameObject Ezy;
+    public GameObject MeeleEmpty;
+    [Space(40)] public GameObject Ezy;
+    public GameObject EzyHand;
     public GameObject EzyPlain;
     public GameObject EzyEgyptian;
-    [Space(20)] public GameObject BeekoHand;
-    public GameObject Beeko;
+    [Space(20)] public GameObject Beeko;
+    public GameObject BeekoHand;
     public GameObject BeekoPlain;
     public GameObject BeekoEgyptian;
 
 //    private PlayerController playerController;
 //    private CharacterController controller;
+
+
     private Vector3 lastPosition;
 
     private Quaternion lastRotation;
@@ -27,9 +30,10 @@ public class CharacterChanger : MonoBehaviour
     void Start()
     {
         if (!gunEmpty)
-        {
             gunEmpty = GameObject.Find("Gun Empty");
-        }
+        if (!MeeleEmpty)
+            MeeleEmpty = GameObject.Find("Melee Empty");
+
 
 //        playerController = GetComponent<PlayerController>();
 //        controller = GetComponent<CharacterController>();
@@ -161,7 +165,7 @@ public class CharacterChanger : MonoBehaviour
                     !Ezy.GetComponent<EzyController>().getOnLadder() &&
                     !Ezy.GetComponent<EzyController>().getShoving())
                     return true;
-                    break;
+                break;
             case PlayerCharacter.Beeko:
                 if (!Beeko.GetComponent<PlayerController>().getSwimming() &&
                     !Beeko.GetComponent<PlayerController>().getOnLadder())

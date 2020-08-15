@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using GameEnumSpace;
 using UnityEngine;
 
 public class PlayerAnimationController : MonoBehaviour
 {
     public Animator animator;
     public GameObject player;
+    public SwpGun gunEmpty;
 
     protected CharacterController controller;
     protected bool ledge = true;
@@ -15,6 +17,8 @@ public class PlayerAnimationController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         controller = player.GetComponent<CharacterController>();
+        if (!gunEmpty)
+            gunEmpty = GameObject.Find("Gun Empty").GetComponent<SwpGun>();
     }
 
     // Update is called once per frame
@@ -24,6 +28,15 @@ public class PlayerAnimationController : MonoBehaviour
         getVertical();
         getLedgeGrab();
         standardSetMethods();
+        meeleAtack();
+    }
+
+    protected void meeleAtack()
+    {
+        if (gunEmpty.getCurrentGun() == PlayerWeapons.Hand && Input.GetButton("Fire1"))
+            animator.SetBool("Melee", false);
+        else
+            animator.SetBool("Melee",false);
     }
 
     protected void getLedgeGrab()

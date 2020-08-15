@@ -39,7 +39,9 @@ namespace GameEnumSpace
     public enum PlayerCharacter
     {
         Ezy,
-        Beeko
+        Beeko,
+        Alun,
+        Nalu
     }
 }
 
