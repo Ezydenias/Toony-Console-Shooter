@@ -1465,30 +1465,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1039885784}
   m_CullTransparentMesh: 0
---- !u!1 &1074410397 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1074410397, guid: 94bf28412d764564997b287146657e56,
-    type: 3}
-  m_PrefabInstance: {fileID: 5685652130148207206}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1074410399
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1074410397}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f5a1616557b31d40827e74c75bff385, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PlayerEmpty: {fileID: 0}
-  active: 0
-  EzyMelee: {fileID: 0}
-  BeekoMelee: {fileID: 0}
-  AlunMelee: {fileID: 5685652130148207207}
-  NaluMelee: {fileID: 0}
 --- !u!1 &1093707360 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -2876025711078630780, guid: 93717c149b64fdd46917d5670ba8166c,
@@ -4417,17 +4393,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7085983383762728525, guid: 94bf28412d764564997b287146657e56,
         type: 3}
-      propertyPath: MeeleEmpty
-      value: 
-      objectReference: {fileID: 1074410399}
+      propertyPath: gun
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94bf28412d764564997b287146657e56, type: 3}
---- !u!1 &5685652130148207207 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5355801633129737785, guid: 94bf28412d764564997b287146657e56,
-    type: 3}
-  m_PrefabInstance: {fileID: 5685652130148207206}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6184085098186085321
 PrefabInstance:
   m_ObjectHideFlags: 0

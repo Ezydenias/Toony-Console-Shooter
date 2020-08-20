@@ -21,7 +21,7 @@ public class SwpGun : MonoBehaviour
     // Start is called before the first frame update
 
     private float lastButton = 0;
-    private PlayerWeapons gun;
+    public PlayerWeapons gun;
     private PlayerWeapons lastgun;
     // Update is called once per frame
 
@@ -55,11 +55,12 @@ public class SwpGun : MonoBehaviour
                 }
                 
                 deactivateAll();
-
+                Debug.Log(gun);
                 switch (gun)
                 {
                     case PlayerWeapons.Hand:
                         MeeleEmpty.ActivateMelee();
+                        temp = 0;
                         break;
                     case PlayerWeapons.Guns:
                         if (gun1Active)

@@ -11,7 +11,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     protected CharacterController controller;
     protected bool ledge = true;
-
+    public SwpMelee MeleeEmpty;
 
     void Start()
     {
@@ -19,6 +19,8 @@ public class PlayerAnimationController : MonoBehaviour
         controller = player.GetComponent<CharacterController>();
         if (!gunEmpty)
             gunEmpty = GameObject.Find("Gun Empty").GetComponent<SwpGun>();
+        if (!MeleeEmpty)
+            MeleeEmpty = GameObject.Find("Melee Empty").GetComponent<SwpMelee>();
     }
 
     // Update is called once per frame
@@ -33,10 +35,20 @@ public class PlayerAnimationController : MonoBehaviour
 
     protected void meeleAtack()
     {
-        if (gunEmpty.getCurrentGun() == PlayerWeapons.Hand && Input.GetButton("Fire1"))
-            animator.SetBool("Melee", false);
+        if (MeleeEmpty.active)
+        {
+            animator.SetBool("Melee", true);
+            if (Input.GetButton("Fire1"))
+                animator.SetBool("Melee Attack", true);
+            else
+                animator.SetBool("Melee Attack", false);
+        }
         else
-            animator.SetBool("Melee",false);
+        {
+            animator.SetBool("Melee", false);
+            animator.SetBool("Melee Attack", false);
+
+        }
     }
 
     protected void getLedgeGrab()
